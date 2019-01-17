@@ -3,58 +3,56 @@ import { Platform } from 'react-native';
 import { createStackNavigator, createBottomTabNavigator } from 'react-navigation';
 
 import TabBarIcon from '../components/TabBarIcon';
-import HomeScreen from '../screens/HomeScreen';
-import LinksScreen from '../screens/LinksScreen';
-import SettingsScreen from '../screens/SettingsScreen';
+import TodoScreen from '../screens/TodoScreen';
+import HabitsScreen from '../screens/HabitsScreen';
+import MoodScreen from '../screens/MoodScreen';
 
-const HomeStack = createStackNavigator({
-  Home: HomeScreen,
+const TodoStack = createStackNavigator({
+  Todo: TodoScreen,
 });
 
-HomeStack.navigationOptions = {
-  tabBarLabel: 'Home',
+TodoStack.navigationOptions = {
+  tabBarLabel: 'To Do List',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
       name={
-        Platform.OS === 'ios'
-          ? `ios-information-circle${focused ? '' : '-outline'}`
-          : 'md-information-circle'
+        Platform.OS === 'ios' ? 'ios-list' : 'md-list'
       }
     />
   ),
 };
 
-const LinksStack = createStackNavigator({
-  Links: LinksScreen,
+const HabitsStack = createStackNavigator({
+  Habits: HabitsScreen,
 });
 
-LinksStack.navigationOptions = {
-  tabBarLabel: 'Links',
+HabitsStack.navigationOptions = {
+  tabBarLabel: 'Habits',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={Platform.OS === 'ios' ? 'ios-link' : 'md-link'}
+      name={Platform.OS === 'ios' ? 'ios-calendar' : 'md-calendar'}
     />
   ),
 };
 
-const SettingsStack = createStackNavigator({
-  Settings: SettingsScreen,
+const MoodStack = createStackNavigator({
+  Mood: MoodScreen,
 });
 
-SettingsStack.navigationOptions = {
-  tabBarLabel: 'Settings',
+MoodStack.navigationOptions = {
+  tabBarLabel: 'Mood',
   tabBarIcon: ({ focused }) => (
     <TabBarIcon
       focused={focused}
-      name={Platform.OS === 'ios' ? 'ios-options' : 'md-options'}
+      name={Platform.OS === 'ios' ? 'ios-happy' : 'md-happy'}
     />
   ),
 };
 
 export default createBottomTabNavigator({
-  HomeStack,
-  LinksStack,
-  SettingsStack,
+  TodoStack,
+  HabitsStack,
+  MoodStack,
 });
