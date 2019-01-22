@@ -19,7 +19,6 @@ export default class TodoScreen extends React.Component {
     super(props);
     this.state = {
       text: '',
-      placeholder: 'New Todo',
       data: [
         { key: 'water the venus fly trap plants' },
         { key: "brush my hamster's teeth" },
@@ -38,7 +37,7 @@ export default class TodoScreen extends React.Component {
           style={{height: 40, borderColor: 'gray', borderWidth: 1}}
           onChangeText={(text) => this.setState({text})}
           value={this.state.text}
-          placeholder={this.state.placeholder}
+          placeholder="New Todo"
           maxLength={280}
         />
         <KeyboardSpacer />

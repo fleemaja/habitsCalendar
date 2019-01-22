@@ -6,6 +6,7 @@ import TabBarIcon from '../components/TabBarIcon';
 import TodoScreen from '../screens/TodoScreen';
 import HabitsScreen from '../screens/HabitsScreen';
 import MoodScreen from '../screens/MoodScreen';
+import AddHabitFormScreen from '../screens/AddHabitFormScreen';
 
 const TodoStack = createStackNavigator({
   Todo: TodoScreen,
@@ -24,8 +25,13 @@ TodoStack.navigationOptions = {
 };
 
 const HabitsStack = createStackNavigator({
-  Habits: HabitsScreen,
-});
+    Habits: HabitsScreen,
+    AddHabitForm: AddHabitFormScreen
+  },
+  {
+    initialRouteName: "Habits"
+  }
+);
 
 HabitsStack.navigationOptions = {
   tabBarLabel: 'Habits',
