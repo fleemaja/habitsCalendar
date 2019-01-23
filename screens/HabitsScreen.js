@@ -34,7 +34,12 @@ export default class HabitsScreen extends React.Component {
       <ScrollView style={styles.container}>
         <FlatList
           data={this.state.data}
-          renderItem={({item}) => <Text>{item.key} - {item.description}</Text>}
+          renderItem={({item}) =>
+            <Text
+              onPress={() => this.props.navigation.navigate('HabitDetail', {item})}>
+              {item.key} - {item.description}
+            </Text>
+          }
           />
         <Button
           title="Add New Habit"

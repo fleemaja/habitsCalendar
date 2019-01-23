@@ -7,6 +7,7 @@ import TodoScreen from '../screens/TodoScreen';
 import HabitsScreen from '../screens/HabitsScreen';
 import MoodScreen from '../screens/MoodScreen';
 import AddHabitFormScreen from '../screens/AddHabitFormScreen';
+import HabitDetailScreen from '../screens/HabitDetailScreen';
 
 const TodoStack = createStackNavigator({
   Todo: TodoScreen,
@@ -26,7 +27,8 @@ TodoStack.navigationOptions = {
 
 const HabitsStack = createStackNavigator({
     Habits: HabitsScreen,
-    AddHabitForm: AddHabitFormScreen
+    AddHabitForm: AddHabitFormScreen,
+    HabitDetail: HabitDetailScreen
   },
   {
     initialRouteName: "Habits"
