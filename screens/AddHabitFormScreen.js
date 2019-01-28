@@ -25,10 +25,9 @@ export default class AddHabitFormScreen extends React.Component {
   }
 
   submitHabit() {
-    const key = this.state.key;
-    const description = this.state.description;
+    const { key, description, days } = this.state;
     const { params } = this.props.navigation.state;
-    params.addHabit({ key, description })
+    params.addHabit({ key, description, days })
     this.props.navigation.navigate('Habits')
   }
 

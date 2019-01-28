@@ -31,11 +31,29 @@ export default class HabitsScreen extends React.Component {
       data: [
         {
           key: "Floss",
-          description: "I need to start flossing everyday to avoid cavities in between my teeth"
+          description: "I need to start flossing everyday to avoid cavities in between my teeth",
+          days: [
+            { name: 'Monday', toggled: true },
+            { name: 'Tuesday', toggled: true },
+            { name: 'Wednesday', toggled: true },
+            { name: 'Thursday', toggled: true },
+            { name: 'Friday', toggled: true },
+            { name: 'Saturday', toggled: true },
+            { name: 'Sunday', toggled: true }
+          ]
         },
         {
           key: "Meditation",
-          description: "I want to meditate everyday to improve my focus and self-control"
+          description: "I want to meditate everyday to improve my focus and self-control",
+          days: [
+            { name: 'Monday', toggled: true },
+            { name: 'Tuesday', toggled: true },
+            { name: 'Wednesday', toggled: true },
+            { name: 'Thursday', toggled: true },
+            { name: 'Friday', toggled: true },
+            { name: 'Saturday', toggled: true },
+            { name: 'Sunday', toggled: true }
+          ]
         }
       ]
     }
@@ -74,6 +92,15 @@ export default class HabitsScreen extends React.Component {
           onPress={() => this.props.navigation.navigate('HabitDetail', {item})}>
           <Text style={styles.label}>{item.key}</Text>
           <Text style={styles.description}>{item.description}</Text>
+          <Text style={styles.days}>
+            {
+              (item.days.filter((d) => d.toggled).length === 7)
+                ? "Daily"
+                : item.days.filter((d) => d.toggled)
+                       .map((d) => d.name)
+                       .join(", ")
+            }
+          </Text>
           {
             (this.state.editMode) &&
             (<Button
@@ -97,7 +124,7 @@ export default class HabitsScreen extends React.Component {
         {
           (this.state.data.length === 0) &&
             (
-              <View>
+              <View style={styles.noHabitsMessage}>
                 <Text>No habits added yet!</Text>
                 <Button
                   title="Add New Habit"
@@ -131,5 +158,13 @@ const styles = StyleSheet.create({
   },
   description: {
     fontSize: 16
+  },
+  noHabitsMessage: {
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  days: {
+    color: 'blue'
   }
 });

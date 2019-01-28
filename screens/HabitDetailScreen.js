@@ -2,8 +2,10 @@ import React from 'react';
 import { View, StyleSheet, Text } from 'react-native';
 
 export default class HabitDetailScreen extends React.Component {
-  static navigationOptions = {
-    title: "Habit Detail",
+  static navigationOptions = ({ navigation }) => {
+    return {
+      title: navigation.state.params.item.key,
+    }
   };
 
   render() {
@@ -12,6 +14,15 @@ export default class HabitDetailScreen extends React.Component {
       <View style={styles.container}>
         <Text style={styles.habitLabel}>{ params.item.key }</Text>
         <Text style={styles.description}>{ params.item.description}</Text>
+        <Text style={styles.days}>
+          {
+            (params.item.days.filter((d) => d.toggled).length === 7)
+              ? "Daily"
+              : params.item.days.filter((d) => d.toggled)
+                     .map((d) => d.name)
+                     .join(", ")
+          }
+        </Text>
         <View style={styles.month}>
           <View style={styles.week}>
             <View style={styles.day}><Text>1</Text></View>
@@ -85,5 +96,8 @@ const styles = StyleSheet.create({
   },
   completedDay: {
     backgroundColor: 'powderblue',
+  },
+  days: {
+    color: 'blue'
   }
 });
