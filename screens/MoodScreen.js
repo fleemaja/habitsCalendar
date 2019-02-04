@@ -26,8 +26,9 @@ export default class MoodScreen extends React.Component {
           monthName = months[monthIdx],
           dayOfMonth = d.getDate(),
           dayYear = d.getFullYear(),
+          completed = Math.random() > 0.5 ? true : false,
           nameString = `${dayOfTheWeek} ${monthName} ${dayOfMonth}, ${dayYear}`;
-    return { "month": monthName, "year": dayYear, dayOfTheWeek, dayOfMonth, nameString };
+    return { "month": monthName, "year": dayYear, dayOfTheWeek, dayOfMonth, nameString, completed };
   }
 
   getDays() {
@@ -57,18 +58,70 @@ export default class MoodScreen extends React.Component {
     return data;
   }
 
+  getColumnInfo(days, dayName) {
+    let firstRow = [];
+    let finishedLoop = false;
+    days.forEach((d) => {
+      let currentDay = d.dayOfTheWeek;
+      if (currentDay !== 'Sunday' && !finishedLoop) {
+        firstRow.push(d.dayOfMonth)
+      } else if (currentDay === 'Sunday') {
+        finishedLoop = true;
+      }
+    })
+    let dnDays = days.filter((d) => d.dayOfTheWeek === dayName);
+    let onFirstRow = false;
+    if (firstRow.length > 0) {
+      firstRow.forEach((day) => {
+        if (dnDays[0].dayOfMonth === day) {
+          onFirstRow = true;
+        }
+      })
+    } else {
+      onFirstRow = true;
+    }
+    if (!onFirstRow) {
+      const blankDay = { 'dayOfMonth': null }
+      dnDays = [blankDay, ...dnDays];
+    }
+    return dnDays;
+  }
+
+  _renderDay(d) {
+    if (d.dayOfMonth == null) {
+      return (
+        <View style={styles.day} key={Math.floor(99999999999999 * Math.random())}>
+          <Text style={styles.nullText}></Text>
+        </View>
+      )
+    } else {
+      const dayStyles = d.completed ? [styles.day, styles.completed] : [styles.day];
+      return (
+        <View key={d.dayOfMonth} style={dayStyles}>
+          <Text style={styles.dayText}>{d.dayOfMonth}</Text>
+        </View>
+      )
+    }
+  }
+
   renderMonth(index, item) {
     const days = item.days;
-    const saturdays = days.filter((d) => d.dayOfTheWeek === "Saturday");
-    const sundays = days.filter((d) => d.dayOfTheWeek === "Sunday");
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
+                  'Thursday', 'Friday', 'Saturday'];
     return (
       <View key={index} style={styles.monthContainer}>
-        <View style={styles.weekdayColumnContainer}>
-          { sundays.map((s) => <Text key={s.dayOfMonth} styles={styles.sundays}>{s.dayOfMonth}</Text>) }
-        </View>
-        <View style={styles.weekdayColumnContainer}>
-          { saturdays.map((s) => <Text key={s.dayOfMonth} styles={styles.saturdays}>{s.dayOfMonth}</Text>) }
-        </View>
+        {
+          dayNames.map((dayName) => {
+            const dnDays = this.getColumnInfo(days, dayName);
+            return (
+              <View style={styles.weekdayColumnContainer} key={dayName}>
+                {
+                  dnDays.map((d) => this._renderDay(d))
+                }
+              </View>
+            )
+          })
+        }
       </View>
     )
   }
@@ -101,12 +154,22 @@ const styles = StyleSheet.create({
   },
   monthContainer: {
     flexDirection: 'row',
+    marginBottom: 30,
   },
   weekdayColumnContainer: {
-    flexDirection: 'column'
+    flexDirection: 'column',
+    flex: 1,
   },
-  sundays: {
+  day: {
+    height: 64,
+    justifyContent: 'center'
   },
-  saturdays: {
+  completed: {
+    backgroundColor: '#b0c4de'
+  },
+  dayText: {
+    fontSize: 32,
+    textAlign: 'center',
+    color: '#333'
   }
 });
