@@ -146,6 +146,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     paddingTop: 15,
+    margin: 20,
     backgroundColor: '#fff',
   },
   sectionHeader: {
@@ -165,10 +166,11 @@ const styles = StyleSheet.create({
     justifyContent: 'center'
   },
   completed: {
-    backgroundColor: '#b0c4de'
+    backgroundColor: '#b0c4de',
+    borderRadius: 50,
   },
   dayText: {
-    fontSize: 32,
+    fontSize: 24,
     textAlign: 'center',
     color: '#333'
   }

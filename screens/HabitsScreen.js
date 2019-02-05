@@ -1,5 +1,6 @@
 import React from 'react';
 import { ScrollView, StyleSheet, Text, TouchableOpacity, View, Button, FlatList } from 'react-native';
+import { Icon } from 'expo';
 
 export default class HabitsScreen extends React.Component {
 
@@ -90,9 +91,10 @@ export default class HabitsScreen extends React.Component {
       <View>
         <TouchableOpacity style={styles.row}
           onPress={() => this.props.navigation.navigate('HabitDetail', {item})}>
-          <Text style={styles.label}>{item.key}</Text>
-          <Text style={styles.description}>{item.description}</Text>
-          <Text style={styles.days}>
+          <View style={styles.content}>
+            <Text style={styles.label}>{item.key}</Text>
+            <Text style={styles.description}>{item.description}</Text>
+            <Text style={styles.days}>
             {
               (item.days.filter((d) => d.toggled).length === 7)
                 ? "Daily"
@@ -100,14 +102,22 @@ export default class HabitsScreen extends React.Component {
                        .map((d) => d.name)
                        .join(", ")
             }
-          </Text>
-          {
-            (this.state.editMode) &&
-            (<Button
-              onPress={() => this._deleteItem(item)}
-              title="DELETE"
-              color="#ff0000" />)
-          }
+            </Text>
+            {
+              (this.state.editMode) &&
+              (<Button
+                onPress={() => this._deleteItem(item)}
+                title="DELETE"
+                color="#ff0000" />)
+            }
+          </View>
+
+          <View style={styles.forwardIndicator}>
+            <Icon.Ionicons
+              name="ios-arrow-forward"
+              size={26}
+            />
+          </View>
         </TouchableOpacity>
       </View>
     )
@@ -150,7 +160,10 @@ const styles = StyleSheet.create({
     margin: 5,
     padding: 5,
     borderWidth: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: "center",
   },
   label: {
     fontSize: 24,
@@ -166,5 +179,14 @@ const styles = StyleSheet.create({
   },
   days: {
     color: 'blue'
+  },
+  content: {
+    width: '90%'
+  },
+  forwardIndicator: {
+    width: '10%',
+    flex: 1,
+    alignItems: "center",
+    justifyContent: "center"
   }
 });
