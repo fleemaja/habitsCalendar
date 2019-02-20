@@ -22,8 +22,34 @@ export default class TodoScreen extends React.Component {
       data: [
         { key: 'water the venus fly trap plants', completed: false },
         { key: "brush my hamster's teeth", completed: false },
-      ]
+      ],
+      dayString: this.getDayString()
     };
+  }
+
+  getDayString() {
+    const date = new Date(),
+          year = date.getFullYear(),
+          month = date.getMonth();
+    const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday',
+                  'Thursday', 'Friday', 'Saturday'],
+          months = ["January", "February", "March",
+                    "April", "May", "June", "July",
+                    "August", "September", "October",
+                    "November", "December"],
+          dayIdx = date.getDay(),
+          dayOfTheWeek = days[dayIdx],
+          monthName = months[month],
+          dayOfMonth = date.getDate(),
+          nameString = `${dayOfTheWeek} ${monthName} ${dayOfMonth}, ${year}`;
+    return nameString;
+  }
+
+  _deleteTodo(item) {
+    this.setState(prevState => {
+      const data = prevState.data.filter((d) => d.key != item.key);
+      return { data }
+    })
   }
 
   addTodo() {
@@ -48,6 +74,9 @@ export default class TodoScreen extends React.Component {
     return (
       <TouchableOpacity style={styles.row} onPress={() => this._toggleCompleted(item)}>
         <Text style={textStyle}>{item.key}</Text>
+        <TouchableOpacity onPress={() => this._deleteTodo(item)}>
+          <Text style={{ 'color': 'red' }}>Delete</Text>
+        </TouchableOpacity>
       </TouchableOpacity>
     )
   }
@@ -55,6 +84,8 @@ export default class TodoScreen extends React.Component {
   render() {
     return (
       <View style={styles.container}>
+        <Text style={styles.todoInfo}>{ this.state.dayString }</Text>
+        <Text style={styles.todoInfo}>{this.state.data.length} TO DO</Text>
         <FlatList
           data={this.state.data}
           extraData={this.state}
@@ -77,16 +108,15 @@ export default class TodoScreen extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    margin: 10,
   },
   todoInput: {
     height: 40,
     margin: 20,
     padding: 10,
-    borderColor: 'blue',
+    borderColor: '#333',
     borderRadius: 10,
-    borderWidth: 2
+    borderWidth: 2,
+    backgroundColor: '#fff'
   },
   row: {
     margin: 5,
@@ -101,4 +131,9 @@ const styles = StyleSheet.create({
   label: {
     fontSize: 24,
   },
+  todoInfo: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    margin: 10,
+  }
 });
