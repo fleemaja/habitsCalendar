@@ -8,7 +8,8 @@ import {
   TextInput,
   FlatList,
 } from 'react-native';
-import KeyboardSpacer from 'react-native-keyboard-spacer'
+import KeyboardSpacer from 'react-native-keyboard-spacer';
+import { CheckBox } from 'react-native-elements';
 
 export default class TodoScreen extends React.Component {
   static navigationOptions = {
@@ -52,6 +53,14 @@ export default class TodoScreen extends React.Component {
     })
   }
 
+  _editTodo(item, text) {
+    this.setState(prevState => {
+      const newItem = { ...item, key: text };
+      const data = prevState.data.filter((d) => d.key != item.key);
+      return { ...data, newItem }
+    })
+  }
+
   addTodo() {
     const newTodo = { key: this.state.text, completed: false }
     this.setState(prevState => ({
@@ -70,13 +79,32 @@ export default class TodoScreen extends React.Component {
   }
 
   _renderTodo(item) {
-    const textStyle = item.completed ? [styles.label, styles.completed] : [styles.label];
+    const todoStyles = [styles.label, styles.todoColumn];
+    const textStyle = item.completed ? [...todoStyles, styles.completed] : todoStyles;
     return (
-      <TouchableOpacity style={styles.row} onPress={() => this._toggleCompleted(item)}>
-        <Text style={textStyle}>{item.key}</Text>
-        <TouchableOpacity onPress={() => this._deleteTodo(item)}>
-          <Text style={{ 'color': 'red' }}>Delete</Text>
-        </TouchableOpacity>
+      <TouchableOpacity style={styles.row}>
+        <CheckBox
+          onPress={() => this._toggleCompleted(item)}
+          checked={item.completed}
+          size={42}
+          containerStyle={styles.checkBoxColumn}
+        />
+        <TextInput
+          style={textStyle}
+          value={item.key}
+          multiline={true}
+          maxLength={280}
+          returnKeyType="done"
+        />
+        <CheckBox
+          onPress={() => this._deleteTodo(item)}
+          iconRight
+          iconType='material'
+          checkedIcon='clear'
+          checkedColor="red"
+          checked={true}
+          containerStyle={styles.checkBoxColumn}
+        />
       </TouchableOpacity>
     )
   }
@@ -85,12 +113,20 @@ export default class TodoScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Text style={styles.todoInfo}>{ this.state.dayString }</Text>
-        <Text style={styles.todoInfo}>{this.state.data.length} TO DO</Text>
-        <FlatList
-          data={this.state.data}
-          extraData={this.state}
-          renderItem={({item}) => this._renderTodo(item)}
-        />
+        <Text style={styles.todoInfo}>
+          { this.state.data.filter(d => !d.completed).length } TO DO
+        </Text>
+        {
+          this.state.data.length > 0 ? (
+            <FlatList
+              data={this.state.data}
+              extraData={this.state}
+              renderItem={({item}) => this._renderTodo(item)}
+            />
+          ) : (
+            <Text>No todos!</Text>
+          )
+        }
         <TextInput
           style={styles.todoInput}
           onChangeText={(text) => this.setState({text})}
@@ -98,6 +134,7 @@ export default class TodoScreen extends React.Component {
           onSubmitEditing={() => this.addTodo()}
           placeholder="New Todo"
           maxLength={280}
+          returnKeyType="done"
         />
         <KeyboardSpacer />
       </View>
@@ -119,14 +156,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff'
   },
   row: {
-    margin: 5,
+    margin: 10,
     padding: 5,
-    borderWidth: 1,
-    backgroundColor: '#fff'
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#eee'
+  },
+  todoColumn: {
+    width: '65%'
+  },
+  checkBoxColumn: {
+    width: '15%'
   },
   completed: {
     textDecorationLine: 'line-through',
-    textDecorationStyle: 'solid'
+    textDecorationStyle: 'solid',
+    color: '#999',
   },
   label: {
     fontSize: 24,
