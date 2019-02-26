@@ -20,10 +20,13 @@ export default class TodoScreen extends React.Component {
     super(props);
     this.state = {
       text: '',
+      editText: '',
+      editingId: null,
       data: [
-        { key: 'water the venus fly trap plants', completed: false },
-        { key: "brush my hamster's teeth", completed: false },
+        { id: 0, key: 'water the venus fly trap plants', completed: false },
+        { id: 1, key: "brush my hamster's teeth", completed: false },
       ],
+      nextId: 2,
       dayString: this.getDayString()
     };
   }
@@ -48,31 +51,32 @@ export default class TodoScreen extends React.Component {
 
   _deleteTodo(item) {
     this.setState(prevState => {
-      const data = prevState.data.filter((d) => d.key != item.key);
+      const data = prevState.data.filter((d) => d.id !== item.id);
       return { data }
     })
   }
 
-  _editTodo(item, text) {
+  _editTodo(item) {
     this.setState(prevState => {
-      const newItem = { ...item, key: text };
-      const data = prevState.data.filter((d) => d.key != item.key);
-      return { ...data, newItem }
+      const newItem = { key: this.state.editText, completed: item.completed, id: item.id };
+      const data = prevState.data.map(d => d.id === item.id ? newItem : d);
+      return { data, editingId: null, editText: '' }
     })
   }
 
   addTodo() {
-    const newTodo = { key: this.state.text, completed: false }
+    const newTodo = { key: this.state.text, completed: false, id: this.state.nextId }
     this.setState(prevState => ({
       data: [...prevState.data, newTodo],
-      text: ''
+      text: '',
+      nextId: prevState.nextId + 1
     }))
   }
 
   _toggleCompleted(item) {
     this.setState((prevState) => {
       const toggledData = prevState.data.map((d) =>
-        (d.key === item.key) ? { key: d.key, completed: !d.completed } : d
+        (d.key === item.key) ? { key: d.key, completed: !d.completed, id: d.id } : d
       )
       return { data: toggledData }
     })
@@ -81,6 +85,7 @@ export default class TodoScreen extends React.Component {
   _renderTodo(item) {
     const todoStyles = [styles.label, styles.todoColumn];
     const textStyle = item.completed ? [...todoStyles, styles.completed] : todoStyles;
+    const inputValue = this.state.editingId === item.id ? this.state.editText : item.key;
     return (
       <TouchableOpacity style={styles.row}>
         <CheckBox
@@ -91,7 +96,10 @@ export default class TodoScreen extends React.Component {
         />
         <TextInput
           style={textStyle}
-          value={item.key}
+          value={inputValue}
+          onFocus={() => this.setState({ editingId: item.id, editText: item.key })}
+          onChangeText={(text) => this.setState({ editText: text })}
+          onSubmitEditing={() => this._editTodo(item)}
           multiline={true}
           maxLength={280}
           returnKeyType="done"
